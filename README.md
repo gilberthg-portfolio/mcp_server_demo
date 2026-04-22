@@ -50,20 +50,20 @@ pip install -e .
 
 ---
 
-## Configuration — BCCR credentials
+## Configuration — BCCR bearer token
 
-You need your **own** BCCR API credentials (free registration at the BCCR developer
-portal). The server never ships with credentials.
+You need your **own** BCCR bearer token. Register on the BCCR developer portal, issue
+a token there, and supply it to the server — the server never ships with credentials
+and never needs your username or password.
 
-Provide them via environment variables:
+Provide the token via one environment variable:
 
 ```env
-BCCR_USERNAME=your_username
 BCCR_TOKEN=your_bearer_token
 ```
 
-For local development, place them in a `.env` file at the repo root (already in
-`.gitignore`). For Claude Desktop, inject them through the `mcpServers.env` block in
+For local development, place it in a `.env` file at the repo root (already in
+`.gitignore`). For Claude Desktop, inject it through the `mcpServers.env` block in
 `claude_desktop_config.json` (example below).
 
 ---
@@ -79,7 +79,6 @@ Add an entry to your Claude Desktop config:
       "command": "python",
       "args": ["-m", "bccr_mcp_server"],
       "env": {
-        "BCCR_USERNAME": "your_username",
         "BCCR_TOKEN": "your_bearer_token"
       }
     }
