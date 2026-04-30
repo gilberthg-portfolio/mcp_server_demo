@@ -1,0 +1,90 @@
+# pyproject.toml — the single source of truth for packaging & dev tooling.
+# Modern Python projects use this file instead of the older setup.py / requirements.txt
+# combo. `pip install -e .` reads it to install the package in editable mode.
+
+[build-system]
+# setuptools is the "default" Python build backend. We only need something basic
+# because this project ships pure-Python code.
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bccr-mcp-server"
+version = "0.1.0"
+description = "MCP server exposing USD/CRC exchange rates from Banco Central de Costa Rica."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Gilberth Gutierrez" }]
+keywords = ["mcp", "bccr", "exchange-rate", "costa-rica", "claude"]
+
+# Runtime dependencies. Kept small on purpose.
+# - mcp            : the official Model Context Protocol Python SDK (FastMCP).
+# - httpx          : modern HTTP client with async support. Used to call the BCCR REST API.
+# - pydantic       : data modelling + validation. We use it for BCCR response shapes.
+# - python-dotenv  : loads key=value pairs from a .env file during local development.
+dependencies = [
+    "mcp>=1.2.0",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "python-dotenv>=1.0",
+    # Windows doesn't ship an IANA timezone database, so `zoneinfo` can't find
+    # "America/Costa_Rica" out of the box. On Windows we pull the `tzdata`
+    # PyPI package, which `zoneinfo` uses automatically when present. No-op
+    # on Linux/macOS because they provide the database through the OS.
+    "tzdata; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+# Installed with `pip install -e ".[dev]"` — separates tests/lint from runtime.
+# - pytest          : the test runner.
+# - pytest-asyncio  : lets pytest await `async def` test functions.
+# - respx           : records and matches httpx requests, so BCCR calls are stubbed in tests.
+# - ruff            : extremely fast Python linter + formatter.
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/gilberthg-portfolio/mcp_server_demo"
+Issues = "https://github.com/gilberthg-portfolio/mcp_server_demo/issues"
+
+[project.scripts]
+# After install, `bccr-mcp-server` on the PATH maps to __main__:main.
+bccr-mcp-server = "bccr_mcp_server.__main__:main"
+
+# --- setuptools configuration ----------------------------------------------
+# The `src/` layout keeps importable code out of the repo root so tests cannot
+# accidentally import from the source tree instead of the installed package.
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# --- ruff configuration ----------------------------------------------------
+# One-stop linter + formatter. Line length stays a bit longer than the 88 default
+# because our docstrings and comment blocks are deliberately prose-like.
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# Default rule set plus a few common-sense groups:
+# - E, W : pycodestyle (style errors + warnings)
+# - F    : pyflakes (unused imports, undefined names)
+# - I    : import sorting
+# - B    : bugbear (common Python footguns)
+# - UP   : pyupgrade (suggests modern syntax)
+select = ["E", "W", "F", "I", "B", "UP"]
+# Test files do bendy things — don't shout about them.
+extend-per-file-ignores = { "tests/**" = ["B", "E501"] }
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --- pytest configuration --------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"            # every `async def test_*` is auto-awaited
+filterwarnings = ["error"]       # surfaces deprecations early (the spec asks for clean output)
