@@ -13,9 +13,9 @@ Claude Desktop.
 ## Demo
 
 ### Tool Usage
-![Tool Demo 1](./assets/ss01UsingtTheTool.jpg)
+![Tool Demo 1](./assets/ss01UsingTheTool.jpg)
 
-![Tool Demo 2](./assets/ss02UsingtTheTool.jpg)
+![Tool Demo 2](./assets/ss02UsingTheTool.jpg)
 
 ### Sampling in Action
 ![Sampling Demo 1](./assets/ss03Sampling.jpg)
