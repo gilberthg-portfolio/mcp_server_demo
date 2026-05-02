@@ -10,6 +10,18 @@ Claude Desktop.
 > walkthrough. Start at [`docs/README.md`](docs/README.md).
 
 ---
+## Demo
+
+### Tool Usage
+![Tool Demo 1](./assets/ss01UsingtTheTool.jpg)
+
+![Tool Demo 2](./assets/ss02UsingtTheTool.jpg)
+
+### Sampling in Action
+![Sampling Demo 1](./assets/ss03Sampling.jpg)
+
+![Sampling Demo 2](./assets/ss04Sampling.jpg)
+
 
 ## What it does
 
